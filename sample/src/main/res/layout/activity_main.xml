@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             xmlns:circlesButton="http://schemas.android.com/apk/res-auto"
+             tools:context="com.example.root.kotlinappliacation.activities.MainActivity"
+             android:background="@drawable/bg_main_activity">
+
+
+    <com.example.circlesbutton.CirclesButton
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        circlesButton:mainCircleSize="100dp"
+        circlesButton:mainCircleColor="#CCFFFFFF"
+        circlesButton:mainCircleBackgroundImage="@drawable/bg_circular_resource"
+        circlesButton:mainCircleBackgroundImageSize="72dp"
+
+        circlesButton:secondaryCirclesNumber="2"
+        circlesButton:secondaryCirclesColor="#88FFFFFF"
+        circlesButton:animationDuration="1700"
+        circlesButton:secondaryCirclesAnimation="expandingAndDisappearing"/>
+
+</FrameLayout>

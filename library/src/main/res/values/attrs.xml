@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="circlesButton">
+        <attr name="mainCircleSize" format="dimension"/>
+        <attr name="mainCircleColor" format="color"/>
+        <attr name="mainCircleBackgroundImage" format="reference"/>
+        <attr name="mainCircleBackgroundImageSize" format="dimension"/>
+
+        <attr name="secondaryCirclesNumber" format="integer"/>
+        <attr name="secondaryCirclesColor" format="color"/>
+
+        <attr name="secondaryCirclesAnimation" format="enum">
+            <enum name="progressive" value="0"/>
+            <enum name="randomly" value="1"/>
+            <enum name="expandingAndDisappearing" value="2"/>
+            <enum name="collapsingAndAppear" value="3"/>
+        </attr>
+
+        <attr name="animationDuration" format="integer"/>
+    </declare-styleable>
+</resources>
