@@ -12,8 +12,8 @@
         <attr name="secondaryCirclesAnimation" format="enum">
             <enum name="progressive" value="0"/>
             <enum name="randomly" value="1"/>
-            <enum name="expandingAndDisappearing" value="2"/>
-            <enum name="collapsingAndAppear" value="3"/>
+            <enum name="expandAndDisappear" value="2"/>
+            <enum name="collapseAndAppear" value="3"/>
         </attr>
 
         <attr name="animationDuration" format="integer"/>

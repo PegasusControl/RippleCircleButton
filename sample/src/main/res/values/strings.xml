@@ -3,4 +3,5 @@
 
     <!-- Strings related to login -->
     <string name="title_activity_main">RippleCircleButton</string>
+    <string name="title_activity_empty">EmptyActivity</string>
 </resources>

@@ -12,7 +12,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
-        versionName "1.0"
+        versionName "1.1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -39,5 +39,5 @@ dependencies {
     implementation 'com.intuit.sdp:sdp-android:1.0.4'
 
 
-    compile(project(':library'))
+    compile(project(':ripple-circle-button'))
 }
