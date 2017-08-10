@@ -14,7 +14,7 @@ The library requires Android **API Level 16+**
 
 ## Demo
 
-[_Current versión 1.1.2_](https://github.com/PegasusControl/RippleCircleButton/releases/download/1.1.2/sample_1.1.2.apk)
+[_Current versión 1.1.2_](https://github.com/PegasusControl/RippleCircleButton/releases/download/1.1.2/sample-1.1.2.apk)
 
 [**Releases**](https://github.com/PegasusControl/RippleCircleButton/releases)
 
