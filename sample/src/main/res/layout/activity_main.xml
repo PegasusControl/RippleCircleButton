@@ -11,15 +11,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        circlesButton:mainCircleSize="100dp"
-        circlesButton:mainCircleColor="#CCFFFFFF"
-        circlesButton:mainCircleBackgroundImage="@drawable/ic_power_settings_new_blue_700_48dp"
-        circlesButton:mainCircleBackgroundImageSize="72dp"
+        circlesButton:animationDuration="1500"
+        circlesButton:layout_constraintEnd_toEndOf="parent"
 
-        circlesButton:secondaryCirclesNumber="3"
+        circlesButton:layout_constraintStart_toStartOf="parent"
+        circlesButton:layout_constraintTop_toTopOf="parent"
+
+        circlesButton:mainCircleBackgroundImage="@drawable/ic_power_settings_new_blue_700_48dp"
+        circlesButton:mainCircleBackgroundImageSize="@dimen/_70sdp"
+        circlesButton:mainCircleColor="#FFFFFFFF"
+        circlesButton:mainCircleSize="@dimen/_40sdp"
+        circlesButton:secondaryCirclesAnimation="expandAndDisappear"
         circlesButton:secondaryCirclesColor="#88FFFFFF"
-        circlesButton:animationDuration="1700"
-        circlesButton:secondaryCirclesAnimation="collapseAndAppear"
+        circlesButton:secondaryCirclesNumber="3"
         />
 
 </FrameLayout>

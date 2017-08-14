@@ -1,8 +1,7 @@
 package mx.com.pegasus
 
-import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.Window
 import android.view.WindowManager
@@ -23,17 +22,25 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        rippleCircleButton.mainCircleSize = 100f //Value is in DPs
-        rippleCircleButton.mainCircleColor = Color.parseColor("#CCFFFFFF")
+//        rippleCircleButton.mainCircleSize = 100f //Value is in DPs
+//        rippleCircleButton.mainCircleColor = Color.parseColor("#CCFFFFFF")
+//
+//        rippleCircleButton.mainCircleBackgroundImage = ContextCompat.getDrawable(baseContext, R.drawable.ic_power_settings_new_blue_700_48dp)
+//        rippleCircleButton.mainCircleBackgroundImageSize = 100f //Value is in DPs
+//
+//        rippleCircleButton.secondaryCirclesNumber = 3
+//        rippleCircleButton.secondaryCirclesColor = Color.parseColor("#88FFFFFF")
+//
+//        rippleCircleButton.animationDuration = 1700 //Value is in Milliseconds
+//        rippleCircleButton.secondaryCirclesAnimation = RippleCircleButton.EXPAND_AND_DISAPPEAR_ANIMATION
 
-        rippleCircleButton.mainCircleBackgroundImage = ContextCompat.getDrawable(baseContext, R.drawable.ic_power_settings_new_blue_700_48dp)
-        rippleCircleButton.mainCircleBackgroundImageSize = 100f //Value is in DPs
+        Handler().postDelayed({
+            rippleCircleButton.stopAnimation()
+        }, 200)
 
-        rippleCircleButton.secondaryCirclesNumber = 3
-        rippleCircleButton.secondaryCirclesColor = Color.parseColor("#88FFFFFF")
-
-        rippleCircleButton.animationDuration = 1700 //Value is in Milliseconds
-        rippleCircleButton.secondaryCirclesAnimation = RippleCircleButton.EXPAND_AND_DISAPPEAR_ANIMATION
+        rippleCircleButton.setOnClickListener({
+            rippleCircleButton.startAnimation()
+        })
 
 
 //        Observable.zip(

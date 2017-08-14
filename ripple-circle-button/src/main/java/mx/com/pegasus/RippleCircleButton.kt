@@ -41,6 +41,7 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
 
     //region Global Variables
     //region backing properties
+    private var _mainCircleSizeInDp: Float = 0f
     private var _mainCircleSize: Float = 0f
     private var _mainCircleColor: Int = 0
     private var _mainCircleBackgroundImage: Drawable? = null
@@ -61,6 +62,7 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
             return _mainCircleSize
         }
         set(value) {
+            _mainCircleSizeInDp = value
             _mainCircleSize = ViewUtils.dpToPx(context, value.toInt())
             val mainCircleLayoutParams = FrameLayout.LayoutParams(_mainCircleSize.toInt(), _mainCircleSize.toInt())
             mainCircleLayoutParams.gravity = Gravity.CENTER
@@ -166,6 +168,8 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
 
                     _mainCircleSize =
                             typedArray.getDimension(R.styleable.circlesButton_mainCircleSize, 0f)
+                    _mainCircleSizeInDp = _mainCircleSizeInDp
+
                     _mainCircleColor =
                             typedArray.getColor(R.styleable.circlesButton_mainCircleColor, Color.parseColor("#CCFFFFFF"))
 
@@ -192,6 +196,7 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
     }
 
     fun stopAnimation() {
+        _mainCircleSize = _mainCircleSizeInDp
         cleanViews()
     }
 
@@ -224,6 +229,7 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
                 theComponentWasInflated = true
 
                 mainCircleSize = if (_mainCircleSize == 0f) (width / 3).toFloat() else _mainCircleSize
+
                 mainCircleColor = _mainCircleColor
                 mainCircleBackgroundImage = _mainCircleBackgroundImage
 
