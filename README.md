@@ -105,7 +105,7 @@ Compile and finally you can add `mx.com.pegasus.RippleCircleButton` view on any 
     circlesButton:secondaryCirclesColor="#88FFFFFF"
 
     circlesButton:animationDuration="1700"
-    circlesButton:secondaryCirclesAnimation="expandingAndDisappearing"/>
+    circlesButton:secondaryCirclesAnimation="expandAndDisappear"/>
 ```
 
 ### JAVA
