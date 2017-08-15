@@ -12,6 +12,7 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewTreeObserver
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
 import io.reactivex.Observable
@@ -20,7 +21,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.toObservable
 import kotlinx.android.synthetic.main.circles_button_layout.view.*
-import mx.com.pegasus.ripplecirclebutton.R
 import mx.com.pegasus.view_utils.ViewUtils
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -54,7 +54,6 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
     private var _animationDuration: Long = 0
 
     private var _circles: MutableList<View> = ArrayList()
-    private var _circlesLoaded: Boolean = false
     //endregion
     //region Getters && setters
     var mainCircleSize: Float
@@ -143,6 +142,9 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
             cleanAndDrawNewCircles()
         }
     //endregion
+    //region Callbacks
+    private lateinit var mOnClickListener: OnMainCircleClickListener
+    //endregion
     //endregion
 
     //region inflateCircles
@@ -193,6 +195,7 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
     fun startAnimation() {
         stopAnimation()
         cleanAndDrawNewCircles()
+        inflateCircles()
     }
 
     fun stopAnimation() {
@@ -212,22 +215,15 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
 
     private fun cleanAndDrawNewCircles() {
         cleanViews()
-
-        theComponentWasInflated = false
-        _circlesLoaded = false
     }
 
 
-    private var theComponentWasInflated: Boolean = false
-    /**
-     * This function inflate the main circle and then calls another methods for create the secondary
-     * circles
-     */
-    private fun inflateCircles() {
-        this.viewTreeObserver.addOnGlobalLayoutListener {
-            if (!theComponentWasInflated) {
-                theComponentWasInflated = true
+    lateinit var mComponentViewTreeObserver: ViewTreeObserver.OnGlobalLayoutListener
 
+    fun initializeComponentViewTreeObserver() {
+        mComponentViewTreeObserver = object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                viewTreeObserver.removeOnGlobalLayoutListener(this)
                 mainCircleSize = if (_mainCircleSize == 0f) (width / 3).toFloat() else _mainCircleSize
 
                 mainCircleColor = _mainCircleColor
@@ -236,36 +232,46 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
                 initMainCircularImageView()
 
                 when (_secondaryCirclesAnimation) {
-                    PROGRESSIVE_ANIMATION -> simpleAnimation(_secondaryCirclesNumber)
-                    RANDOMLY_ANIMATION -> simpleAnimation(_secondaryCirclesNumber)
-                    EXPAND_AND_DISAPPEAR_ANIMATION -> dynamicAnimation(_secondaryCirclesNumber)
-                    COLLAPSE_AND_APPEAR_ANIMATION -> dynamicAnimation(_secondaryCirclesNumber)
+                    PROGRESSIVE_ANIMATION -> simpleAnimation()
+                    RANDOMLY_ANIMATION -> simpleAnimation()
+                    EXPAND_AND_DISAPPEAR_ANIMATION -> dynamicAnimation()
+                    COLLAPSE_AND_APPEAR_ANIMATION -> dynamicAnimation()
                 }
             }
         }
     }
 
+    /**
+     * This function inflate the main circle and then calls another methods for create the secondary
+     * circles
+     */
+    private fun inflateCircles() {
+        initializeComponentViewTreeObserver()
+        this.viewTreeObserver.addOnGlobalLayoutListener(mComponentViewTreeObserver)
+    }
+
     private fun initMainCircularImageView() {
+        main_circle_image.setOnClickListener({ mOnClickListener?.let { it.onClick() } })
         main_circle_image.setBorderColor(Color.parseColor("#00FFFFFF"))
         main_circle_image.setBorderWidth(0f)
-//        main_circle_image.setShadowRadius(0f)
-//        main_circle_image.setShadowColor(Color.parseColor("#00FFFFFF"))
     }
 
     //region PROGRESSIVE AND RANDOMLY ANIMATION
-    private fun simpleAnimation(circles: Int) {
-        secondary_circle_container.viewTreeObserver.addOnGlobalLayoutListener {
-            if (!_circlesLoaded) {
-                _circlesLoaded = true
 
+    lateinit var mCirclesContainerViewTreeObserver: ViewTreeObserver.OnGlobalLayoutListener
+
+    private fun initializeCirclesContainerViewTreeObserver() {
+        mCirclesContainerViewTreeObserver = object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                secondary_circle_container.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 val maxDpis = secondary_circle_container.width
                 val minDpis = main_circle.width
 
-                for (x in 1..circles) {
+                for (x in 1.._secondaryCirclesNumber) {
                     val diameter = when (_secondaryCirclesAnimation) {
-                        PROGRESSIVE_ANIMATION -> (((maxDpis - minDpis) / circles) * x) + minDpis
+                        PROGRESSIVE_ANIMATION -> (((maxDpis - minDpis) / _secondaryCirclesNumber) * x) + minDpis
                         RANDOMLY_ANIMATION -> Random().nextInt(maxDpis + 1 - minDpis) + minDpis
-                        else -> (((maxDpis - minDpis) / circles) * x) + minDpis
+                        else -> (((maxDpis - minDpis) / _secondaryCirclesNumber) * x) + minDpis
                     }
 
                     val frameParams: FrameLayout.LayoutParams = FrameLayout.LayoutParams(diameter, diameter)
@@ -288,6 +294,12 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
                 }
             }
         }
+    }
+
+    private fun simpleAnimation() {
+        initializeCirclesContainerViewTreeObserver()
+        secondary_circle_container.viewTreeObserver
+                .addOnGlobalLayoutListener(mCirclesContainerViewTreeObserver)
     }
 
     private fun simpleAnimation(view: View, maxIncrease: Int, maxDecrease: Int) {
@@ -360,15 +372,17 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
     //endregion
 
     //region DISAPPEARING_ANIMATION
-    private fun dynamicAnimation(circles: Int) {
-        secondary_circle_container.viewTreeObserver.addOnGlobalLayoutListener {
-            if (!_circlesLoaded) {
-                _circlesLoaded = true
 
+    lateinit var mDynamicCirclesContainerViewTreeObserver: ViewTreeObserver.OnGlobalLayoutListener
+
+    private fun initializeDynamicCirclesContainerViewTreeObserver() {
+        mDynamicCirclesContainerViewTreeObserver = object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                secondary_circle_container.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 val maxDpis = if (_secondaryCirclesAnimation == EXPAND_AND_DISAPPEAR_ANIMATION) secondary_circle_container.width else main_circle.width
                 val minDpis = if (_secondaryCirclesAnimation == EXPAND_AND_DISAPPEAR_ANIMATION) main_circle.width else secondary_circle_container.width
 
-                for (x in 1..circles) {
+                for (x in 1.._secondaryCirclesNumber) {
                     val diameter = minDpis
 
                     val frameParams: FrameLayout.LayoutParams = FrameLayout.LayoutParams(diameter, diameter)
@@ -394,6 +408,12 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
                 dynamicAnimation(minDpis, maxDpis)
             }
         }
+    }
+
+    private fun dynamicAnimation() {
+        initializeDynamicCirclesContainerViewTreeObserver()
+        secondary_circle_container.viewTreeObserver
+                .addOnGlobalLayoutListener(mDynamicCirclesContainerViewTreeObserver)
     }
 
     private var inflateCirclesInterval: Disposable? = null
@@ -472,7 +492,16 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
     //endregion
 
     //region Getter & Setter
+    fun setOnMainCircleClickListener(onMainCircleClickListener: OnMainCircleClickListener) {
+        mOnClickListener = onMainCircleClickListener
+    }
+    //endregion
 
+    //region interfaces
+    @FunctionalInterface
+    interface OnMainCircleClickListener {
+        fun onClick()
+    }
     //endregion
 
 }

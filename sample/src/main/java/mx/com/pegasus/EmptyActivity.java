@@ -14,6 +14,12 @@ public class EmptyActivity extends AppCompatActivity {
 
         RippleCircleButton rippleCircleButton = findViewById(R.id.pulse_circle_button);
         rippleCircleButton.setSecondaryCirclesNumber(5);
+        rippleCircleButton.setOnMainCircleClickListener(new RippleCircleButton.OnMainCircleClickListener() {
+            @Override
+            public void onClick() {
+
+            }
+        });
 
     }
 

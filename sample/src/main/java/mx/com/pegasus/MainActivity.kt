@@ -22,43 +22,38 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-//        rippleCircleButton.mainCircleSize = 100f //Value is in DPs
-//        rippleCircleButton.mainCircleColor = Color.parseColor("#CCFFFFFF")
-//
-//        rippleCircleButton.mainCircleBackgroundImage = ContextCompat.getDrawable(baseContext, R.drawable.ic_power_settings_new_blue_700_48dp)
-//        rippleCircleButton.mainCircleBackgroundImageSize = 100f //Value is in DPs
-//
-//        rippleCircleButton.secondaryCirclesNumber = 3
-//        rippleCircleButton.secondaryCirclesColor = Color.parseColor("#88FFFFFF")
-//
-//        rippleCircleButton.animationDuration = 1700 //Value is in Milliseconds
-//        rippleCircleButton.secondaryCirclesAnimation = RippleCircleButton.EXPAND_AND_DISAPPEAR_ANIMATION
+        Handler().postDelayed({
+            rippleCircleButton.stopAnimation()
+        }, 100)
 
         Handler().postDelayed({
             rippleCircleButton.stopAnimation()
-        }, 200)
-
-        rippleCircleButton.setOnClickListener({
+            rippleCircleButton.secondaryCirclesAnimation = RippleCircleButton.COLLAPSE_AND_APPEAR_ANIMATION
+            rippleCircleButton.secondaryCirclesNumber = 3
+            rippleCircleButton.animationDuration = 1500
             rippleCircleButton.startAnimation()
+            Handler().postDelayed({
+                rippleCircleButton.stopAnimation()
+                rippleCircleButton.secondaryCirclesAnimation = RippleCircleButton.PROGRESSIVE_ANIMATION
+                rippleCircleButton.secondaryCirclesNumber = 7
+                rippleCircleButton.animationDuration = 4000
+                rippleCircleButton.startAnimation()
+                Handler().postDelayed({
+                    rippleCircleButton.stopAnimation()
+                    rippleCircleButton.secondaryCirclesAnimation = RippleCircleButton.EXPAND_AND_DISAPPEAR_ANIMATION
+                    rippleCircleButton.secondaryCirclesNumber = 7
+                    rippleCircleButton.animationDuration = 4000
+                    rippleCircleButton.startAnimation()
+                }, 10000)
+            }, 10000)
+        }, 10000)
+
+        rippleCircleButton.setOnMainCircleClickListener(object : RippleCircleButton.OnMainCircleClickListener {
+            override fun onClick() {
+                rippleCircleButton.startAnimation()
+            }
         })
 
-
-//        Observable.zip(
-//                Observable.range(0, 10),
-//                Observable.interval(6000, TimeUnit.MILLISECONDS),
-//                BiFunction { t1: Int, t2: Long -> t1 })
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe({
-//                    if(it == 1) rippleCircleButton.startAnimation() else rippleCircleButton.stopAnimation()
-//                    if(it == 2) rippleCircleButton.secondaryCirclesColor = Color.parseColor("#66FF0000")
-//                    if(it == 3) rippleCircleButton.secondaryCirclesColor = Color.parseColor("#FFFFFF")
-//                    if(it == 4) rippleCircleButton.mainCircleSize = baseContext.resources.displayMetrics.density * 200 + 0.5f
-//                    if(it == 5) rippleCircleButton.secondaryCirclesNumber = 5
-////                    if(it == 6) rippleCircleButton.mainCircleSize = baseContext.resources.displayMetrics.density * 200 + 0.5f
-////                    if(it == 7) rippleCircleButton.mainCircleSize = baseContext.resources.displayMetrics.density * 200 + 0.5f
-////                    if(it == 8) rippleCircleButton.mainCircleSize = baseContext.resources.displayMetrics.density * 200 + 0.5f
-//                    if(it == 10) rippleCircleButton.stopAnimation()
-//                })
     }
     //endregion
 
