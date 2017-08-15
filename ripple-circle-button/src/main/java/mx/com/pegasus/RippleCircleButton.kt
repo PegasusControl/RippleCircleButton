@@ -21,6 +21,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.toObservable
 import kotlinx.android.synthetic.main.circles_button_layout.view.*
+import mx.com.pegasus.ripplecirclebutton.R
 import mx.com.pegasus.view_utils.ViewUtils
 import java.util.*
 import java.util.concurrent.TimeUnit
