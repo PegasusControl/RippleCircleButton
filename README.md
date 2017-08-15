@@ -14,7 +14,7 @@ The library requires Android **API Level 16+**
 
 ## Demo
 
-[_Current versión 1.1.4_](https://github.com/PegasusControl/RippleCircleButton/releases/download/1.1.4/sample-1.1.4.apk)
+[_Current versión 1.1.5_](https://github.com/PegasusControl/RippleCircleButton/releases/download/1.1.5/sample-1.1.5.apk)
 
 [**Releases**](https://github.com/PegasusControl/RippleCircleButton/releases)
 
@@ -78,7 +78,7 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation 'com.mikhaellopez:circularimageview:3.0.2'
 
-    implementation 'mx.com.pegasus:ripple-circle-button:1.1.4'
+    implementation 'mx.com.pegasus:ripple-circle-button:1.1.5'
 }
 ```
 

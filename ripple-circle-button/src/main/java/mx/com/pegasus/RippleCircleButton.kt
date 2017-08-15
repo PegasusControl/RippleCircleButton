@@ -144,7 +144,7 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
         }
     //endregion
     //region Callbacks
-    private lateinit var mOnClickListener: OnMainCircleClickListener
+    private var mOnClickListener: OnMainCircleClickListener? = null
     //endregion
     //endregion
 

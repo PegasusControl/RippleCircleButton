@@ -48,12 +48,6 @@ class MainActivity : AppCompatActivity() {
             }, 10000)
         }, 10000)
 
-        rippleCircleButton.setOnMainCircleClickListener(object : RippleCircleButton.OnMainCircleClickListener {
-            override fun onClick() {
-                rippleCircleButton.startAnimation()
-            }
-        })
-
     }
     //endregion
 
