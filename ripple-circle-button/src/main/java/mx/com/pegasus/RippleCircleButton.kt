@@ -55,6 +55,7 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
     private var _animationDuration: Long = 0
 
     private var _circles: MutableList<View> = ArrayList()
+    private var _animations: MutableList<ValueAnimator> = ArrayList()
     //endregion
     //region Getters && setters
     var mainCircleSize: Float
@@ -67,6 +68,7 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
             val mainCircleLayoutParams = FrameLayout.LayoutParams(_mainCircleSize.toInt(), _mainCircleSize.toInt())
             mainCircleLayoutParams.gravity = Gravity.CENTER
             main_circle.layoutParams = mainCircleLayoutParams
+            invalidate()
         }
 
     var mainCircleColor: Int
@@ -78,6 +80,7 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
             val mainCircleFillingDrawable = ContextCompat.getDrawable(context, R.drawable.bg_main_circle)
             mainCircleFillingDrawable.colorFilter = PorterDuffColorFilter(_mainCircleColor, PorterDuff.Mode.MULTIPLY)
             main_circle.background = mainCircleFillingDrawable
+            invalidate()
         }
 
     var mainCircleBackgroundImage: Drawable?
@@ -91,6 +94,7 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
                 main_circle_image.setImageDrawable(_mainCircleBackgroundImage)
                 mainCircleImageLayoutParams.gravity = Gravity.CENTER
                 main_circle_image.layoutParams = mainCircleImageLayoutParams
+                invalidate()
             }
         }
 
@@ -105,6 +109,7 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
                 main_circle_image.setImageDrawable(_mainCircleBackgroundImage)
                 mainCircleImageLayoutParams.gravity = Gravity.CENTER
                 main_circle_image.layoutParams = mainCircleImageLayoutParams
+                invalidate()
             }
         }
 
@@ -186,16 +191,18 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
                     typedArray.recycle()
                 }
                 inflateCircles()
+                invalidate()
             }
         }
     }
+
     //endregion
 
     //region RippleCircleButton functions
 
     fun startAnimation() {
         stopAnimation()
-        cleanAndDrawNewCircles()
+//        cleanAndDrawNewCircles()
         inflateCircles()
     }
 
@@ -210,14 +217,24 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
             inflateCirclesInterval = null
         }
 
+        _animations.forEach({ stopAnimation(it) })
+
         secondary_circle_container.removeAllViews()
         _circles = ArrayList()
+        invalidate()
+    }
+
+    private fun stopAnimation(valueAnimator: ValueAnimator?) {
+        if (valueAnimator != null) {
+            valueAnimator.removeAllUpdateListeners()
+            valueAnimator.end()
+            valueAnimator.cancel()
+        }
     }
 
     private fun cleanAndDrawNewCircles() {
         cleanViews()
     }
-
 
     lateinit var mComponentViewTreeObserver: ViewTreeObserver.OnGlobalLayoutListener
 
@@ -225,7 +242,7 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
         mComponentViewTreeObserver = object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 viewTreeObserver.removeOnGlobalLayoutListener(this)
-                mainCircleSize = if (_mainCircleSize == 0f) (width / 3).toFloat() else _mainCircleSize
+                mainCircleSize = if (_mainCircleSize == 0f) (width / 3).toFloat() else if (_mainCircleSizeInDp.toInt() != 0) _mainCircleSizeInDp else _mainCircleSize
 
                 mainCircleColor = _mainCircleColor
                 mainCircleBackgroundImage = _mainCircleBackgroundImage
@@ -247,6 +264,7 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
      * circles
      */
     private fun inflateCircles() {
+        _animations = ArrayList()
         initializeComponentViewTreeObserver()
         this.viewTreeObserver.addOnGlobalLayoutListener(mComponentViewTreeObserver)
     }
@@ -305,8 +323,8 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
 
     private fun simpleAnimation(view: View, maxIncrease: Int, maxDecrease: Int) {
         //animation
-        val increaseAnimation = ValueAnimator.ofInt(maxIncrease, maxDecrease)
-        increaseAnimation.addUpdateListener({
+        var increaseSimpleAnimation = ValueAnimator.ofInt(maxIncrease, maxDecrease)
+        increaseSimpleAnimation?.addUpdateListener({
             val value = it.animatedValue as Int
             val layoutParams = view.layoutParams
             layoutParams.height = value
@@ -319,8 +337,9 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
             view.background = circleColor
         })
 
-        val decreaseAnimation = ValueAnimator.ofInt(maxDecrease, maxIncrease)
-        decreaseAnimation.addUpdateListener({
+        var decreaseSimpleAnimation = ValueAnimator.ofInt(maxDecrease, maxIncrease)
+
+        decreaseSimpleAnimation?.addUpdateListener({
             val value = it.animatedValue as Int
             val layoutParams = view.layoutParams
             layoutParams.height = value
@@ -341,10 +360,10 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
 
         _animationDuration = animationDuration
 
-        increaseAnimation.duration = _animationDuration
-        decreaseAnimation.duration = _animationDuration
+        increaseSimpleAnimation?.duration = _animationDuration
+        decreaseSimpleAnimation?.duration = _animationDuration
 
-        increaseAnimation.addListener(object : Animator.AnimatorListener {
+        increaseSimpleAnimation?.addListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(p0: Animator?) {}
 
             override fun onAnimationCancel(p0: Animator?) {}
@@ -352,11 +371,11 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
             override fun onAnimationRepeat(p0: Animator?) {}
 
             override fun onAnimationEnd(animator: Animator) {
-                decreaseAnimation.start()
+                decreaseSimpleAnimation?.start()
             }
         })
 
-        decreaseAnimation.addListener(object : Animator.AnimatorListener {
+        decreaseSimpleAnimation?.addListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(p0: Animator?) {}
 
             override fun onAnimationCancel(p0: Animator?) {}
@@ -364,11 +383,14 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
             override fun onAnimationRepeat(p0: Animator?) {}
 
             override fun onAnimationEnd(animator: Animator) {
-                increaseAnimation.start()
+                increaseSimpleAnimation?.start()
             }
         })
 
-        increaseAnimation.start()
+        increaseSimpleAnimation?.start()
+
+        _animations.add(increaseSimpleAnimation)
+        _animations.add(decreaseSimpleAnimation)
     }
     //endregion
 
@@ -436,10 +458,12 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
 
     private fun dynamicAnimation(view: View, minSize: Int, maxSize: Int) {
         //animation
-        val increaseAnimation = ValueAnimator.ofInt(minSize, maxSize)
-        increaseAnimation.interpolator = AccelerateDecelerateInterpolator()
-        val increaseAgainAnimation = ValueAnimator.ofInt(minSize, maxSize)
-        increaseAgainAnimation.interpolator = AccelerateDecelerateInterpolator()
+        var increaseAnimation = ValueAnimator.ofInt(minSize, maxSize)
+        increaseAnimation?.interpolator = AccelerateDecelerateInterpolator()
+        var increaseAgainAnimation = ValueAnimator.ofInt(minSize, maxSize)
+        increaseAgainAnimation?.interpolator = AccelerateDecelerateInterpolator()
+        _animations.add(increaseAnimation)
+        _animations.add(increaseAgainAnimation)
 
         val updateListener = ValueAnimator.AnimatorUpdateListener {
             valueAnimator ->
@@ -463,30 +487,30 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
             view.background.alpha = currentPercent.toInt()
         }
 
-        increaseAnimation.addUpdateListener(updateListener)
-        increaseAgainAnimation.addUpdateListener(updateListener)
-        increaseAnimation.duration = _animationDuration
-        increaseAgainAnimation.duration = _animationDuration
+        increaseAnimation?.addUpdateListener(updateListener)
+        increaseAgainAnimation?.addUpdateListener(updateListener)
+        increaseAnimation?.duration = _animationDuration
+        increaseAgainAnimation?.duration = _animationDuration
 
-        increaseAnimation.addListener(object : Animator.AnimatorListener {
+        increaseAnimation?.addListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(p0: Animator?) {}
             override fun onAnimationCancel(p0: Animator?) {}
             override fun onAnimationRepeat(p0: Animator?) {}
             override fun onAnimationEnd(animator: Animator) {
-                increaseAgainAnimation.start()
+                increaseAgainAnimation?.start()
             }
         })
 
-        increaseAgainAnimation.addListener(object : Animator.AnimatorListener {
+        increaseAgainAnimation?.addListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(p0: Animator?) {}
             override fun onAnimationCancel(p0: Animator?) {}
             override fun onAnimationRepeat(p0: Animator?) {}
             override fun onAnimationEnd(animator: Animator) {
-                increaseAnimation.start()
+                increaseAnimation?.start()
             }
         })
 
-        increaseAnimation.start()
+        increaseAnimation?.start()
     }
     //endregion
 
