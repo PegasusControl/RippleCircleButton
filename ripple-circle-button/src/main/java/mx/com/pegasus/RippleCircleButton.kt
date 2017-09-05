@@ -213,6 +213,7 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
 
     private fun cleanViews() {
         inflateCirclesInterval?.let {
+            //Log.e(RippleCircleButton::class.java.name, "Stopping interval thread for create circles")
             inflateCirclesInterval?.dispose()
             inflateCirclesInterval = null
         }
@@ -220,6 +221,7 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
         _animations.forEach({ stopAnimation(it) })
 
         secondary_circle_container.removeAllViews()
+        //Log.e(RippleCircleButton::class.java.name, "removing circles")
         _circles = ArrayList()
         invalidate()
     }
@@ -229,6 +231,9 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
             valueAnimator.removeAllUpdateListeners()
             valueAnimator.end()
             valueAnimator.cancel()
+            //Log.e(RippleCircleButton::class.java.name, "circle value animator stopped")
+        } else {
+            //Log.e(RippleCircleButton::class.java.name, "trying to stop valueAnimator, but it is null")
         }
     }
 
@@ -460,8 +465,10 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
         //animation
         var increaseAnimation = ValueAnimator.ofInt(minSize, maxSize)
         increaseAnimation?.interpolator = AccelerateDecelerateInterpolator()
+
         var increaseAgainAnimation = ValueAnimator.ofInt(minSize, maxSize)
         increaseAgainAnimation?.interpolator = AccelerateDecelerateInterpolator()
+
         _animations.add(increaseAnimation)
         _animations.add(increaseAgainAnimation)
 
