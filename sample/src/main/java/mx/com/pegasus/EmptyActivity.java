@@ -5,6 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.root.kotlinappliacation.R;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
+
 public class EmptyActivity extends AppCompatActivity {
 
     @Override
@@ -14,10 +17,10 @@ public class EmptyActivity extends AppCompatActivity {
 
         RippleCircleButton rippleCircleButton = findViewById(R.id.pulse_circle_button);
         rippleCircleButton.setSecondaryCirclesNumber(5);
-        rippleCircleButton.setOnMainCircleClickListener(new RippleCircleButton.OnMainCircleClickListener() {
+        rippleCircleButton.setOnMainCircleClickListener(new Function0<Unit>() {
             @Override
-            public void onClick() {
-
+            public Unit invoke() {
+                return Unit.INSTANCE;
             }
         });
 

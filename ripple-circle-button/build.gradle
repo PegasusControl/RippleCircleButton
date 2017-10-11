@@ -6,14 +6,14 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    buildToolsVersion '26.0.2'
 
 
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 4
-        versionName "1.1.7"
+        versionName "1.1.8"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -58,7 +58,7 @@ ext {
     siteUrl = 'https://github.com/PegasusControl/RippleCircleButton'
     gitUrl = 'https://github.com/PegasusControl/RippleCircleButton.git'
 
-    libraryVersion = '1.1.7'
+    libraryVersion = '1.1.8'
 
     developerId = 'AngeeelD'
     developerName = 'Ángel Durán'

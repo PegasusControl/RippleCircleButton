@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
+import com.mikhaellopez.circularimageview.CircularImageView
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -98,6 +99,9 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
             }
         }
 
+    val mainCircleImageContainer: CircularImageView?
+        get() = main_circle_image
+
     var mainCircleBackgroundImageSize: Float
         get() {
             return _mainCircleBackgroundImageSize
@@ -149,7 +153,7 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
         }
     //endregion
     //region Callbacks
-    private var mOnClickListener: OnMainCircleClickListener? = null
+    private var mOnClickListener: (() -> Unit)? = null
     //endregion
     //endregion
 
@@ -275,7 +279,7 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
     }
 
     private fun initMainCircularImageView() {
-        main_circle_image.setOnClickListener({ mOnClickListener?.let { it.onClick() } })
+        main_circle_image.setOnClickListener({ mOnClickListener?.let { it.invoke() } })
         main_circle_image.setBorderColor(Color.parseColor("#00FFFFFF"))
         main_circle_image.setBorderWidth(0f)
     }
@@ -524,7 +528,7 @@ class RippleCircleButton @JvmOverloads constructor(context: Context?, attrs: Att
     //endregion
 
     //region Getter & Setter
-    fun setOnMainCircleClickListener(onMainCircleClickListener: OnMainCircleClickListener) {
+    fun setOnMainCircleClickListener(onMainCircleClickListener: (() -> Unit)?) {
         mOnClickListener = onMainCircleClickListener
     }
     //endregion
